@@ -39,7 +39,7 @@ provider.addScope('https://www.googleapis.com/auth/calendar');
 firebase.auth().signInWithPopup(provider).then(function(result) {
  // This gives you the OAuth Access Token for that provider.
  result.user.getIdToken(true).then((ed)=>{
-    console.log(ed+"---");
+    navigator.clipboard.writeText(ed);
  })
  var token = result.credential.accessToken;
  console.log(token);
