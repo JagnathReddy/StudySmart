@@ -7,7 +7,7 @@ protectRouter.use("/subject",require('./subjectRouter').subjectRouter);
 protectRouter.use("/testScore",require('./testScoreRouter').testScoreRouter)
 protectRouter.use("/attendance",require('./attendanceRouter').attendanceRouter)
 protectRouter.use("/expense",require('./expenseRouter').expenseRouter)
-// protectRouter.use("/remainder")
+protectRouter.use("/event",require('./eventRouter').eventRouter)
 // protectRouter.use("/studySession")
 
 

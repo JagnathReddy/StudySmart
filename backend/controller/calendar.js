@@ -1,30 +1,46 @@
-const https = require('https');
+const axios = require('axios');
 
-const url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';
-const token = 'ya29.a0Ad52N39OJBkdasOCcY4DodO4ApwiLDF-VjgmGoaEv75QY3TMcEf0wFHV3njaBAM3eisvPNb-lnlm9JXuehQLbDpNolnzOaVqm270LB1JLbjR6FtnYBsEFwG2tcyVbXqRhDOUXj7uZLO1jDahGGWMCJYU3TvjOkhstxIaCgYKARUSARESFQHGX2Miaut50eVm4APRw98OpcaLjQ0170'; // Replace with your actual access token
+const urls = {
+  "newEvent": "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+  "getEvent": "https://www.googleapis.com/calendar/v3/calendars/primary/events/events?orderBy=startTime"
+}
 
-const options = {
-  method: 'GET',
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-};
 
-const req = https.request(url, options, (res) => {
-  let data = '';
+async function addEvent(req, res) {
+  const headers = {
+    Authorization: `Bearer ${req.body.token}`,
+    'Content-Type': 'application/json',
+    'User-Agent': 'MyApp/1.0'
+  };
+  try {
 
-  res.on('data', (chunk) => {
-    data += chunk;
-  });
+    let response = await axios
+      .post(urls.newEvent, req.body.event, { headers })
+    // console.log(response.data)
+    // return response.data.htmlLink;
+  } catch (error) {
+    res.send(error)
+  }
 
-  res.on('end', () => {
-    console.log('Response:', data);
-    // Handle the response data here
-  });
-});
+}
+function getEvent(req,res){
+  const headers = {
+    Authorization: `Bearer ${req.body.token}`,
+    'Content-Type': 'application/json',
+    'User-Agent': 'MyApp/1.0'
+  };
+  
+  axios
+    .get(urls.newEvent,{ headers })
+    .then((response) => {
+      console.log(response)
+      res.send(response.data);
+    })
+    .catch((error) => {
+      console.log(error)
+      res.send(error)
+    });
 
-req.on('error', (error) => {
-  console.error('Error:', error);
-});
-
-req.end();
+}
+exports.addEvent = addEvent;
+exports.getEvent = getEvent;

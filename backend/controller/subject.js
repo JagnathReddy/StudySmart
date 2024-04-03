@@ -18,4 +18,9 @@ exports.getAllSubject= async (req, res) => {
     const obj=await subjectRef.get()
     res.send(obj.data());
 }
+exports.getAllSubject= async (req, res) => {
+    const subjectRef = db.collection('subject').doc(req.user.email)
+    const obj=await subjectRef.get()
+    res.send(obj.data());
+}
 

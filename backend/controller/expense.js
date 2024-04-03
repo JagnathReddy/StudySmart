@@ -49,7 +49,22 @@ exports.shareExpense= async(req,res)=>{
         return;
     }
     expenseRef.set({"public":true,"link":`localhost:8000/public/getExpense/${expenseRef.id}`},{merge:true})
-    
-    expenseRef.set({"public":true},{merge:true})
     res.redirect(`/public/getExpense/${expenseRef.id}`);
+}
+
+
+exports.getExpense=async(req,res)=>{
+    const expenseRef=db.collection('expense').doc(req.params.id)
+    
+    let expenseData=(await expenseRef.get())
+    if(!expenseData.exists){
+        res.status(404).send("check expense id");
+        return
+    }
+    expenseData=expenseData.data()
+    if(expenseData.user!==req.user.email){
+        res.status(401).end();
+        return;
+    }
+    res.send(expenseData);
 }
