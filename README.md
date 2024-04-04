@@ -348,6 +348,7 @@ Event:
   description:(String)
   end:{dateTime,timeZone}
   start:{dateTime,timeZone}
+  link:(map of {name:link}) (for file sharing)
   summary:(String)
 ```
 Expense:
