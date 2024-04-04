@@ -67,10 +67,10 @@ EVENT:
              tokenid: Authentication token
         >Request Body
             JSON format
-            Requires {token:oauthToken,EventSchema(event details including summary, location, description, start and end date/time, reminders, and attendees)}.
+            Requires {token:oauthToken,event:EventSchema(event details including summary, location, description, start and end date/time, reminders, and attendees)}.
         >Response
             Status Code: 200 OK
-            Body: Event ID
+            Body: {Event ID}
         >Errors
             404 Not Found: Event ID not found
             401 Unauthorized: Missing or invalid authentication token
@@ -81,14 +81,14 @@ EVENT:
     2)getEventById:
         >Endpoint:
             `POST /protected/event/getEventById/:id`
-            Retrieves event details by ID, ensuring user authorization.
+            Retrieves event details by id, ensuring user authorization.
         >Headers:
             tokenid: Authentication token
         >URL Parameter: 
             id: Event ID
         >Response 
             Status Code: 200 OK
-            Body: Event details
+            Body: object of eventSchema 
         >Errors
             404 Not Found: Event ID not found
             401 Unauthorized: Missing or invalid authentication token
@@ -101,11 +101,10 @@ EVENT:
         >Headers: 
             accessToken: Access token (optional)
         >Request Body:
-            JSON format
-            Requires event details
+            {}
         >Response:
             Status Code: `200 OK`
-            Body: List of events
+            Body: List of Events
         >Errors: 
             404 Not Found: Events not found
             500 Internal Server Error: Unexpected server error
@@ -117,11 +116,16 @@ EVENT:
         >Headers:
             tokenid: Authentication token
         >Request Body:
+            {
+                "documentBase64":"base 64 of the file",
+                "key":EventId,
+                "fileName":String
+            }
             JSON format
             Requires the file to be uploaded in base64 format
         >Response:
             Status Code: 200 OK           
-            Body: URL of the uploaded file
+            Body: {"url":url}
         >Errors:
             500 Internal Server Error: Failed to upload the file
 
@@ -137,6 +141,7 @@ PROFILE:
             This header contains the authentication token for the user, which is used to verify the user's identity and authorization to access their profile data.
 
         >Response:
+            object of profile
             Status Code: 200 OK
             Body: The response body is a JSON object containing various fields of the user's profile data, such as their name, email, and photo URL.
 
@@ -150,6 +155,7 @@ PROFILE:
             Similar to the previous endpoint, this header contains the authentication token for the user, ensuring that only authorized users can access their friend list.
 
         >Response:
+            [email]
             Status Code: 200 OK
             Body: The response body is a JSON array containing the email addresses or identifiers of the user's friends.
 
@@ -165,9 +171,10 @@ PROFILE:
         >Request Body:
             Format: JSON
             Fields:
-                friendTo: Email or identifier of the friend to be added.
+                "friendTo": Email.
 
         >Response:
+            [email]
             Status Code: 200 OK
             Body: The response body is a JSON array containing the updated list of friends after adding the new friend. This allows users to verify that the friend addition was successful.
 
@@ -184,16 +191,7 @@ TEST SCORES
         >Request Body:
 
             {
-                "subject": {
-                "name": "physics",
-                "sem": "2",
-                "attendence": "100",
-                "lastattendence": "24",
-                "score": {
-                    "1": ["internal", "10", "20"],
-                    "2": ["10", "20"],
-                    "3": ["10", "20"]
-                }}
+                "subject": Subject
             }
 
             Format: JSON
@@ -211,7 +209,7 @@ TEST SCORES
 
     2)getAllSubjects
         >Endpoint: 
-            POST /protected/subject/getAllSubject
+            GET /protected/subject/getAllSubject
             This endpoint retrieves all subjects associated with the authenticated user. It allows users to view the list of subjects they have added along with their respective details.
 
         >Request Headers:
@@ -219,7 +217,7 @@ TEST SCORES
 
         >Response:
             Status Code: 200 OK
-            Body: JSON object containing details of all subjects associated with the user.
+            Body: {subjectName:Subject,subjectName:Subject...}.
 
     3)addScore:
         >Endpoint: 
@@ -231,18 +229,14 @@ TEST SCORES
 
         >Request Body:
             {
-                "subject": "physics",
-                "score": {
-                    "1": ["internal", "10", "20"],
-                    "2": ["10", "20"],
-                    "3": ["10", "20"]
-                }
+                "subject":Subject.name,
+                "score":{NameOfExam:[TypeOfExam,scored,total]} //name has to be unique
             }
 
             Format: JSON
             Fields:
                 subject: Name of the subject for which scores are being added.
-                score: Object containing the updated score structure for the subject.
+                score: Object containing the score structure for the subject.
 
             Response:
                 Status Code: 200 OK
@@ -261,7 +255,7 @@ EXPENSES
         >Request Body:
             {
                 "expense": {
-                "name": "sunil"
+                    "name": NameOfExpense
                 }
             }
             expense: Object containing details of the new expense.
@@ -280,9 +274,9 @@ EXPENSES
             tokenid: Authentication token for the user.
         >Request Body:  
             {
-                "id": "Mv4ntzmYxMh7o1Z2yhPB"
+                "id": ExpenseId
             }
-            id: ID of the expense to be shared.
+            id: ID of the expense to be shared and made public.
 
         >Response:
             Status Code: 302 Found (Redirect)
@@ -293,15 +287,16 @@ EXPENSES
             POST /protected/expense/addExpense
             This endpoint allows users to add details to an existing expense entry.
 
-        >Request Headers: tokenid: Authentication token for the user.
+        >Request Headers: 
+            tokenid: Authentication token for the user.
 
         >Request Body:
             {
-                "id": "Mv4ntzmYxMh7o1Z2yhPB",
+                "id": expenseId,
                 "expense": {
-                    "name": "exam fee 1",
-                    "amount": "2000",
-                    "date": "date"
+                    "name",
+                    "amount"
+                    "date"
                 }
             }
 
@@ -325,7 +320,7 @@ EXPENSES
 
         >Response:
             Status Code: 200 OK
-            Body: Details of the requested expense.
+            Body: Expense.
 
 ## ARCHITECHTURE
 Uses firestore and cloud Storage to store data and large fields
@@ -338,7 +333,8 @@ Event emails are sent to attendees before certain time mentioned in api endpoint
 ## SCHEMA
 Profile:
 ```
-  email:(string),
+  name:(string)
+  email:(string)
   event:(map of {name:EventId})
   expense:(map of {name:expenseId})
   friend:(array of string(email))
@@ -358,7 +354,7 @@ Expense:
   contents:(map of {name:{amount,date,name}})
   date:data
   public:Boolean
-  link:(only exists if public is true)
+  link:(exists only if public is true)(url)
   name : String
   user: String (email)
 ```
