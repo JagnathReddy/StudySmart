@@ -3,6 +3,12 @@
 
 StudySmart is an innovative academic management platform powered by Node.js, Google Firestore and Firebase. Seamlessly sign in with Google to create a personalized profile and collaborate with friends. Track test scores, manage attendance, and upload study materials for efficient exam preparation, track and manage academic expenses. StudySmart offers a streamlined solution to optimize academic success.
 
+## Installation(local)
+1. Clone the repository:
+2. cd backend > npm install > npm start
+3. cd.. > open live server
+
+
 # Terms used:
 Authentication token : access token from firebase auth
 
@@ -10,7 +16,7 @@ Authentication token : access token from firebase auth
 oauthToken : access token from google oauth2.0
 
 
-# Example and Usage of all the apis are available at  [POSTMAN]("https://martian-meadow-186816.postman.co/workspace/4dea1a30-fea5-41c0-a613-3167b647aea1/documentation/25945935-82070a9a-4258-4683-a9b7-54affa169e48")
+# Example and Usage of all the apis are available at  [POSTMAN](https://martian-meadow-186816.postman.co/workspace/4dea1a30-fea5-41c0-a613-3167b647aea1/documentation/25945935-82070a9a-4258-4683-a9b7-54affa169e48 "POSTMAN")
 
 # API endpoints
 ATTENDANCE:
@@ -320,5 +326,52 @@ EXPENSES
             Body: Details of the requested expense.
 
 ## ARCHITECHTURE
+Uses firestore and cloud Storage to store data and large fields
+
+Collections on the databases:profile,subject,expense,event
+
+Uses Google api v3 Calendar to make reminders and collaboration easy 
+
+Event emails are sent to attendees before certain time mentioned in api endpoint
 ## SCHEMA
+Profile:
+```
+  email:(string),
+  event:(map of {name:EventId})
+  expense:(map of {name:expenseId})
+  friend:(array of string(email))
+  photoURL:(url)
+```
+Event:
+```
+  attendees:(map of email)
+  description:(String)
+  end:{dateTime,timeZone}
+  start:{dateTime,timeZone}
+  summary:(String)
+```
+Expense:
+```
+  contents:(map of {name:{amount,date,name}})
+  date:data
+  public:Boolean
+  link:(only exists if public is true)
+  name : String
+  user: String (email)
+```
+Subject:
+```
+  attendance:(map of {date:Boolean})
+  name:String
+  score:(map of {[name:String,scored:number,total:number]})
+```
 ## GOOGLE PRODUCTS
+google firestore 
+
+Google cloud storage
+
+Google oauth2
+
+firebase auth  
+
+Google Calendar
