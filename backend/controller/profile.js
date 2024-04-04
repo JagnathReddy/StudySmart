@@ -7,7 +7,7 @@ exports.getProfile = async (req, res) => {
     if (!doc.exists) {
         await createProfile(req)
         doc = await profileRef.get()
-        res.send(doc.data().friend)
+        res.send(doc.data())
     } else
         res.send(doc.data())
 }

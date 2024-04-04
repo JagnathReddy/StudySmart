@@ -25,7 +25,6 @@ exports.createEvent = async (req, res) => {
 
 exports.getEventById=async (req, res) => {
     const eventRef=db.collection('event').doc(req.params.id)
-    
     let eventData=(await eventRef.get())
     if(!eventData.exists){
         res.status(404).send("check event id");
@@ -54,7 +53,6 @@ exports.uploadFile= async (req, res)=>{
     try {
         const fileBuffer = Buffer.from(req.body.documentBase64.toString(), 'base64'); 
         const bucket = storage().bucket();
-        
         // Generate a unique filename (you can customize this)
         const filename = `pdf_${req.body.key}.pdf`;
         
@@ -69,6 +67,10 @@ exports.uploadFile= async (req, res)=>{
         // Get the public URL of the uploaded file
         const fileUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
         const downloadURL= await getDownloadURL(bucket.file(filename));
+        const eventRef=db.collection('event').doc(req.body.key)
+        let link={}
+        link[req.body.fileName]=downloadURL;
+        eventRef.set({"link":link},{merge:true});
         // Respond with the file URL
         res.status(200).json({ url: downloadURL});
     } catch (error) {

@@ -34,16 +34,21 @@
         //     var user = result.user;
         //     console.log(user)
         // });
+        document.getElementById("logout").addEventListener("click", ()=>{
+            firebase.auth().signOut()
+        })
         onAuthStateChanged(auth,(user)=> {
             if (user) {
             document.getElementById("info").innerText="User Logged in: "+user.email+" , click sign in to change account";
+            navigator.clipboard.writeText(user.accessToken);
         }})
         var uiConfig = {
-            signInSuccessUrl: '/home.html',
+            signInSuccessUrl: './home.html',
             signInOptions: [
                 {
                     provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                    scopes: ['https://www.googleapis.com/auth/calendar']
+                    scopes: ['https://www.googleapis.com/auth/calendar',"https://www.googleapis.com/auth/plus.login"],
+                
                 }
             ],
             privacyPolicyUrl: function () {
@@ -59,6 +64,8 @@
 <body>
     <center><h1 id="info">Welcome to My StudySmart</h1></center>
     <center><button><a href="./home.html">Navigate to Home</a></button></center>
+    
+    <center><button id="logout">Log out</button></center>
     <div id="firebaseui-auth-container"></div>
 </body>
 </html>

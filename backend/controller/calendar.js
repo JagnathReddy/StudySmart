@@ -16,9 +16,9 @@ async function addEvent(req, res) {
 
     let response = await axios
       .post(urls.newEvent, req.body.event, { headers })
-    // console.log(response.data)
-    // return response.data.htmlLink;
+    console.log(response)
   } catch (error) {
+    console.log(error)
     res.send(error)
   }
 
