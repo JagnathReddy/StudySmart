@@ -3,6 +3,8 @@
 
 StudySmart is an innovative academic management platform powered by Node.js, Google Firestore and Firebase. Seamlessly sign in with Google to create a personalized profile and collaborate with friends. Track test scores, manage attendance, and upload study materials for efficient exam preparation, track and manage academic expenses. StudySmart offers a streamlined solution to optimize academic success.
 
+Have a look [here](https://github.com/JagnathReddy/StudySmart/blob/main/withAudio.mkv "here")
+
 ## Installation(local)
 1. Clone the repository:
 2. cd backend > npm install > npm start
