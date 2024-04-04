@@ -1,5 +1,9 @@
 const { getFirestore, Timestamp, FieldValue, Filter } = require('firebase-admin/firestore');
+const { getStorage, getDownloadURL } = require('firebase-admin/storage');
+
 const calendar= require('./calendar');
+const multer = require('multer'); 
+const { storage } = require('firebase-admin');
 const db = getFirestore();
 
 exports.createEvent = async (req, res) => {
@@ -44,6 +48,34 @@ exports.getEventById=async (req, res) => {
 
 exports.getEvent = async (req, res) => {
     calendar.getEvent(req, res);
+}
+
+exports.uploadFile= async (req, res)=>{
+    try {
+        const fileBuffer = Buffer.from(req.body.documentBase64.toString(), 'base64'); 
+        const bucket = storage().bucket();
+        
+        // Generate a unique filename (you can customize this)
+        const filename = `pdf_${req.body.key}.pdf`;
+        
+        // Upload the file to Firebase Storage
+        await bucket.file(filename).save(fileBuffer,
+            {
+                contentType: "application/pdf"
+            },
+        );
+        
+        
+        // Get the public URL of the uploaded file
+        const fileUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+        const downloadURL= await getDownloadURL(bucket.file(filename));
+        // Respond with the file URL
+        res.status(200).json({ url: downloadURL});
+    } catch (error) {
+        console.error('Error uploading PDF:', error);
+        res.status(500).json({ error: 'Failed to upload PDF' });
+    }
+
 }
 
 

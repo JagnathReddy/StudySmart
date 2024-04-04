@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sample FirebaseUI App</title>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.js"></script>
+    <script src="https://apis.google.com/js/api.js" onload="console.log(`loaded `)"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxxEpNsIiOSsge3WHwkhOUNGfgXKcAExY",
+            authDomain: "gbuild-e29bf.firebaseapp.com",
+            projectId: "gbuild-e29bf",
+            storageBucket: "gbuild-e29bf.appspot.com",
+            messagingSenderId: "849493541718",
+            appId: "1:849493541718:web:571cdf0094127d85030cf7"
+        };
+        const App = firebase.initializeApp(firebaseConfig);
+        const auth = getAuth(App);
+        // var provider = new firebase.auth.OAuthProvider('google.com');
+        // provider.addScope('profile');
+        // provider.addScope('email');
+        // provider.addScope('https://www.googleapis.com/auth/calendar');
+        // firebase.auth().signInWithPopup(provider).then(function(result) {
+        //     result.user.getIdToken(true).then((ed)=>{})
+        //     var token = result.credential.accessToken;
+        //     console.log(token+"--------");
+        //     navigator.clipboard.writeText(token);
+        //     var user = result.user;
+        //     console.log(user)
+        // });
+        onAuthStateChanged(auth,(user)=> {
+            if (user) {
+            document.getElementById("info").innerText="User Logged in: "+user.email+" , click sign in to change account";
+        }})
+        var uiConfig = {
+            signInSuccessUrl: '/home.html',
+            signInOptions: [
+                {
+                    provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                    scopes: ['https://www.googleapis.com/auth/calendar']
+                }
+            ],
+            privacyPolicyUrl: function () {
+                window.location.assign('<your-privacy-policy-url>');
+            }
+        };
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
+    
+</head>
+
+<body>
+    <center><h1 id="info">Welcome to My StudySmart</h1></center>
+    <center><button><a href="./home.html">Navigate to Home</a></button></center>
+    <div id="firebaseui-auth-container"></div>
+</body>
+</html>
+
+
+
+
+
+ 
